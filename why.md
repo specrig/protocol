@@ -9,8 +9,9 @@ an agent's context.
 Two kinds of rule live in Rule #11, and they age differently.
 
 **What lasts** holds whoever writes the cases: the delta list, a case verified
-against the requirements, one axis of folding, the negative written, the meaning
-asserted rather than the representation, and the surfaces a reviewer checks
+against the requirements, a case that reads with the comments closed, one axis of
+folding, the negative written, the meaning asserted rather than the representation,
+and the surfaces a reviewer checks
 without trusting the author — the red count equal to the known defects, a case
 seen to fail, every production file named by a case, what each `Then` a task bound
 or changed asserts, and what the merge request must not carry.
@@ -47,6 +48,10 @@ Approval is the human switching the mode. That guarantees the order of the steps
 not that anybody read the cases: no protocol can check the reading, and a pipeline
 can check that a ticket is linked, not that it was argued.
 
+What the diff must not carry costs a glance at the file list and depends on nobody
+having followed any other rule, which is the point of having it: every other rule is
+checkable only by someone who read the work.
+
 ## The specification
 
 A verdict — ✓, ✗, ? — is the state of a review. A tag carrying it in the
@@ -60,6 +65,40 @@ Two cases that differ in one cell, written as prose, read as the same case twice
 and a reviewer spends the attention on telling them apart. Merging cases that
 differ in their setup leaves a column empty on most rows: a sparse column means
 two questions were forced into one table.
+
+A table earns its place only if its rows can be read. Folding by the letter produced
+`| under a locked contract | 2 | locked | -1y | +1m | revoke | suspended |`: a column
+for one row, three columns repeating the row's name, two result columns moving as a
+pair. Hence one sentence per outline, read aloud. Tables stay, and a matrix of
+transitions is what they are for; what goes is the table that needs a legend because
+one cell of it matters.
+
+## A specification that reads
+
+The test of a specification is that its owner reads it. Measured on about a thousand
+cases written under an earlier text of this rule: 86% carried a comment, 3.6 lines
+against 5.2 steps on average, one in five was longer than its case, and no `Feature`
+had a description. The owner had stopped reading: an agent read the cases and retold
+them, the owner confirmed the retelling, and what was approved was not what runs. That
+text asked for it, sending the reason, the meaning of the rows and the excluded
+implementation to the comment.
+
+Deleting the comments is not the cure. Moved to a `Rule`, their text repeats the same
+facts above the cases, and the situations in them — a second unit rented in advance, a
+debt paid off — are the use case the reader is looking for. So the situation stays
+with its case, under its title, and the list of implementations goes to the delta list,
+where a reviewer judges it. An exclusion can still ask for variation in the data, and
+it stops where the reader has to solve the example: that a case discriminates is
+shown by a run, not by the shape of its table.
+
+A reader with no context lists every doubt it has, so their number measures nothing:
+the form this page argues for drew 49 of them where the old one drew 43. A cold read
+is for the wrong retelling and the contradiction, and answering each doubt with prose
+is how a file grows a legend. Doubts still go to the human at hand-over: the author who
+left a gap is not the one to rule it out.
+
+How an event is written lives in a stack's `describes`, not in Rule #11: a web app's
+`When` is a user's action, and its harness delivers nothing.
 
 ## Red-green
 
