@@ -43,12 +43,13 @@ clients:
 Every list is sorted by bytes and holds each entry once; a key with nothing under it
 is left out.
 
-## tests/flows.yaml — `specrig: flows/1`
+## tests/flows.yaml — `specrig: flows/2`
 
 What the cases make the service send, written from the trace of a whole run.
+`flows/1` is `flows/2` without `together`, and a reader of one reads both.
 
 ```yaml
-specrig: flows/1
+specrig: flows/2
 service: shop
 inputs:
   - message: http GET /orders/{id}
@@ -94,15 +95,42 @@ the next input, is what it **sends**.
 A **branch** is the cases that, having received the input, sent the same messages in
 the same order, or were refused the same way. A block sent again straight after
 itself is one pass of a loop, so the number of items a case had does not split its
-branch. Calls begun together go out in an order of chance — the goroutines a loop
-starts, the requests a page sends as answers come in — so a writer puts what they
-sent in its places in the order of its names. A writer that can tell threads apart
-takes the calls of threads started at one place. One whose stand-ins answer in
-rounds — what they are asked waits until the service is quiet, then is answered all
-at once — takes the calls of one round: what a round's answers cause is the next
-one, and so is what the user's next press or key causes. Any other keeps the order
-the calls began in. A **refusal** is named by its status and what the service says
-it is:
+branch.
+
+Calls made side by side go out in an order of chance — the goroutines a loop
+starts, the requests a page sends as answers come in — so they are written as a
+`together`: the sequences that ran side by side, each in the order it sent in, and
+each holding a `together` of its own where it started more. A sequence the same as
+another in the list is written once, so the number of carriers quoted does not split
+a branch either, and a list left with one sequence is that sequence, in its place.
+
+```yaml
+      - sends:
+          - http GET /workday
+          - together:
+              - - http POST /rates
+                - http GET /codes
+              - - http POST /rates
+                - http GET /codes
+                - http GET /currency
+```
+
+A writer that can tell threads apart knows the thread of each call and the threads
+that started it. The input's thread is the root, and every other thread is a
+sequence of its own calls and of what it started; one whose chain stops short of the
+root counts as started by the root. The threads one thread starts between two of its
+own calls run together, in the place of the first call any of them made. A thread
+that sends while the threads it started still send leaves its calls in an order of
+chance against theirs. A writer whose stand-ins answer in rounds — what they are
+asked waits until the service is quiet, then is answered all at once — knows the
+round of each call: the calls of one round run together, each a sequence of its own,
+and what a round's answers cause is the next round, as is what the user's next press
+or key causes. Any other writer keeps the order the calls began in.
+
+A sequence is spelled as its messages comma-separated, and a `together` as its
+sequences in brackets separated by ` & `: `http GET /workday, [http POST /rates,
+http GET /codes & http POST /rates, http GET /codes, http GET /currency]`. A
+**refusal** is named by its status and what the service says it is:
 `HTTP 404 order_not_found` from the body's `type` — not a URI — and
 `NotFound order_not_found` from gRPC's code, as Go's `codes.String()` spells it
 (`Canceled`), and the lowercased reason of the status's `ErrorInfo`. An event a
@@ -118,15 +146,15 @@ in every case of the answered branches sending the message and in no case of the
 others: anything weaker is the fixtures' habits.
 
 Only the `description` fields are written by hand. They are kept by **anchor** — the
-input's message, or `<message> -> <sends, comma-separated>` with ` (refused <refusal>)`
+input's message, or `<message> -> <sends, spelled>` with ` (refused <refusal>)`
 after it for a branch — and one whose anchor is gone moves to `orphaned`, comes back
 with its anchor, and fails the run meanwhile.
 
 A run narrowed to some cases writes nothing: it saw part of the service. Every whole
 run rewrites the record, a failing one included.
 
-Inputs are sorted by message, branches by anchor, cases, fields, outputs and the keys
-of `needs` and `sent` by bytes. Keys in a mapping keep the order above.
+Inputs are sorted by message, branches by anchor, the sequences of a `together` by
+their spelling, cases, fields, outputs and the keys of `needs` and `sent` by bytes. Keys in a mapping keep the order above.
 
 ## tests/checks.yaml — `specrig: checks/1`
 
@@ -214,6 +242,9 @@ input to the record — so a writer in any language can run the same files.
 | `request` | the body, decoded; its leaf paths are the fields |
 | `error` | the refusal, named as above |
 | `round` | the round of answers an `out` call was answered in, from a writer whose stand-ins answer in rounds |
+| `threads` | the thread a record was made on, then the one that started it, and so on as far as the writer knows, from a writer that tells threads apart |
 
 `<name>.trace.json` is a whole run, and `<name>.flows.yaml` the record it comes out
-as, byte for byte.
+as, byte for byte. A writer runs every fixture but one holding what it never sees:
+`threads` for a writer that cannot tell threads apart, `round` for one whose
+stand-ins do not answer in rounds.

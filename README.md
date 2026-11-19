@@ -10,7 +10,7 @@ stacks is here, with fixtures each implementation runs to show it agrees.
 
 | part | version | what |
 |---|---|---|
-| [records.md](records.md) | `surface/1`, `flows/1`, `checks/1` | the records a service's suite writes, and `specrig.yaml` beside them; what `specrig-flows` joins services by |
+| [records.md](records.md) | `surface/1`, `flows/2`, `checks/1` | the records a service's suite writes, and `specrig.yaml` beside them; what `specrig-flows` joins services by |
 | [system.md](system.md) | `index/1` | how the records of every service are read as one system, and the index of its flows that comes out |
 | [guard.md](guard.md) | `guard/1`, `rules/1` | whether the mode on allows editing a path: the rules a stack's tool prints, the verdict a plugin draws from them, and the marker that names the tool |
 | [modes.yaml](modes.yaml) | `modes/1` | the Rule #11 modes as data: the classes of a service's paths and which mode opens which |
